@@ -22,6 +22,13 @@ module.exports = {
   rules: {
     "func-call-spacing": "off",
     "no-console": "off",
+    "vue/v-on-event-hyphenation": [
+      "error",
+      "always",
+      {
+        ignore: ["update:submitUpdate"], // 이벤트 이름을 하이픈으로 구분해야 하는 경우에도 무시합니다.
+      },
+    ],
     "vue/html-self-closing": [
       "warn",
       {

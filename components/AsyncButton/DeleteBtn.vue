@@ -1,22 +1,36 @@
 <script setup lang="ts">
-const { postProps } = defineProps<{ postProps: Object }>();
+const { targetData } = defineProps<{ targetData: any }>();
 const dataStore = dataInit();
 
-//새로 고침 했을 때 최신 데이터로 업데이트 하는 CourseCard 컴포넌트는 랜더링 되지 않으니까
-// deleteBtn은 업데이트 되지 않은 데이터를 가져오게 되네
-//그럼 store에서 localData 업데이트 하는 코드 짜고 싶은데
-// store는 확장자가 ts라 훅을 못 써
-//layout default에 넣어도 해결 안됨
+onMounted(() => {
+  if (!localStorage.getItem("posts")) {
+    const init = dataStore.localDataList;
 
-console.log("업데이트 되나요?", dataStore.getLocalDataList);
+    window.localStorage.setItem("posts", JSON.stringify(init));
+  } else {
+    dataStore.initLocalDataList(
+      JSON.parse(window.localStorage.getItem("posts")!)
+    );
+  }
+});
+const newPost = computed(() => dataStore.getLocalDataList);
 
-const deleteClick = () => {
-  console.log("working");
+const handleDelete = () => {
+  const targetId = targetData.id;
+  const deleteId = dataStore.afterDeleteLocalDataList(targetId);
+
+  newPost.value.splice(deleteId, 1);
+  dataStore.initLocalDataList(newPost.value);
+
+  window.localStorage.setItem("posts", JSON.stringify(newPost.value));
+  alert("게시글이 삭제 되었습니다.");
 };
 </script>
 
 <template>
-  <q-btn color="red" label="삭제" @click="deleteClick" />
+  <nuxt-link to="/">
+    <q-btn color="red" label="삭제" @click="handleDelete" />
+  </nuxt-link>
 </template>
 
 <style scoped></style>

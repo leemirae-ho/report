@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { Course } from "~/types/index.js";
+import type { Post } from "~/types/Post.js";
 import data from "~/assets/courseData";
 
 export const dataInit = defineStore({
@@ -10,16 +10,19 @@ export const dataInit = defineStore({
     };
   },
   actions: {
-    initLocalDataList(value: any) {
+    initLocalDataList(value: Post[]) {
       this.localDataList = value;
     },
-    addLocalDataList(value: Course) {
+    addLocalDataList(value: Post) {
       this.localDataList.push(value);
     },
     filterLocalDataList(value: number) {
       return this.localDataList.filter(
         (item: any) => item.id === value && item
       );
+    },
+    afterDeleteLocalDataList(value: number) {
+      return this.localDataList.findIndex((item) => item.id === value);
     },
   },
 

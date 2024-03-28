@@ -16,7 +16,7 @@ const imageEmits = defineEmits(["update:imageData"]);
 
 <template>
   <div class="input-image-wrap">
-    <q-file color="purple-12" v-model="model" label="Label">
+    <q-file color="purple-12" v-model="model" label="thumbnail">
       <template v-slot:prepend>
         <q-icon name="attach_file" />
       </template>

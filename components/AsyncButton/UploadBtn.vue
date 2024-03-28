@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineEmits(["update:submitUpdate"]);
+</script>
 
 <template>
-  <q-btn color="accent" label="저장" />
+  <q-btn color="secondary" label="저장" @click="$emit('update:submitUpdate')" />
 </template>
 
 <style scoped></style>

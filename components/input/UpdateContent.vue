@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <CreateForm />
+  <textarea class="content-input" />
 </template>
 
 <style scoped></style>

@@ -11,9 +11,9 @@ const pageContainerStyle = computed(() => ({
       <q-toolbar>
         <q-toolbar-title>공통 UI</q-toolbar-title>
         <q-separator dark vertical />
-        <q-btn stretch flat label="Home" to="/" />
+        <q-btn stretch flat label="홈" to="/" />
         <q-separator dark vertical />
-        <q-btn stretch flat label="List" to="/list" />
+        <q-btn stretch flat label="글 작성하기" to="/newpost" />
       </q-toolbar>
     </q-header>
     <q-page-container :style="pageContainerStyle">
