@@ -1,16 +1,29 @@
 <script setup lang="ts">
-import FormComment from "~/components/comment/CommentView.vue";
 import CancelBtn from "~/components/AsyncButton/CancleBtn.vue";
 import DeleteBtn from "~/components/AsyncButton/DeleteBtn.vue";
 import UpdateBtn from "~/components/AsyncButton/UpdateBtn.vue";
 import UploadBtn from "~/components/AsyncButton/UploadBtn.vue";
+import ViewComment from "~/components/comment/ViewComment.vue";
 import type { Post } from "~/types/Post";
-import UpdateContent from "~/components/input/UpdateContent.vue";
 
 const store = dataInit();
 const route = useRoute();
 
+const posts = computed(() => store.getLocalDataList);
+const targetData = ref();
+
+// const updateImage = ref();
+
+const updateTitle = ref("");
+const updateEditor = ref("");
+
 onMounted(() => {
+  targetData.value = posts.value.find(
+    (item: Post) => item.id === Number(route.params.id)
+  );
+
+  updateTitle.value = targetData.value?.title;
+  updateEditor.value = targetData.value?.content;
   if (!localStorage.getItem("posts")) {
     const init = store.localDataList;
 
@@ -20,16 +33,13 @@ onMounted(() => {
   }
 });
 
-const posts = computed(() => store.getLocalDataList);
+const reRendering = () => {
+  store.initLocalDataList(JSON.parse(window.localStorage.getItem("posts")!));
 
-const targetData = posts.value.find(
-  (item: Post) => item.id === Number(route.params.id)
-);
-
-const updateTitle = ref(targetData!.title);
-
-// const updateImage = ref();
-const updateEditor = ref(targetData!.content);
+  targetData.value = posts.value.find(
+    (item: Post) => item.id === Number(route.params.id)
+  );
+};
 
 const updateToggle = ref(false);
 
@@ -52,26 +62,29 @@ const submitUpdate = () => {
 </script>
 
 <template>
-  <ClientOnly>
-    <div class="detail-wrap">
-      <Detail v-if="!updateToggle" :target-data="targetData" />
-      <UpdateForm
-        v-if="updateToggle"
-        v-model:update-title="updateTitle"
-        v-model:update-editor="updateEditor"
-      />
-      <div class="btn-wrap">
-        <DeleteBtn v-if="!updateToggle" :target-data="targetData" />
-        <UpdateBtn v-if="!updateToggle" @update:update-btn="handleToggle" />
+  <div class="detail-wrap">
+    <Detail v-if="!updateToggle" :target-data="targetData" />
+    <UpdateForm
+      v-if="updateToggle"
+      v-model:update-title="updateTitle"
+      v-model:update-editor="updateEditor"
+    />
+    <div class="btn-wrap">
+      <DeleteBtn v-if="!updateToggle" :target-data="targetData" />
+      <UpdateBtn v-if="!updateToggle" @update:update-btn="handleToggle" />
 
-        <CancelBtn v-if="updateToggle" @update:cancle-btn="handleToggle" />
+      <CancelBtn v-if="updateToggle" @update:cancle-btn="handleToggle" />
 
-        <UploadBtn v-if="updateToggle" @update:submitUpdate="submitUpdate" />
-      </div>
-
-      <FormComment v-if="!updateToggle" />
+      <UploadBtn v-if="updateToggle" @update:submitUpdate="submitUpdate" />
     </div>
-  </ClientOnly>
+    <ClientOnly>
+      <ViewComment
+        v-if="!updateToggle"
+        :target-data="targetData"
+        @update:target-data="reRendering"
+      />
+    </ClientOnly>
+  </div>
 </template>
 
 <style scoped>
